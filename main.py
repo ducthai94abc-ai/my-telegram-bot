@@ -5,7 +5,7 @@ from google import genai
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, filters, ContextTypes
 
-# --- 0. TẠO DUMMY WEB SERVER CHO RENDER PASSED PORT CHECK ---
+# --- 0. TẠO DỊCH VỤ WEB SERVER GIÚP RENDER DÙNG GÓI FREE 24/7 ---
 class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         self.send_response(200)
@@ -15,28 +15,27 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
 def run_dummy_server():
     port = int(os.environ.get("PORT", 8080))
     server = HTTPServer(('0.0.0.0', port), SimpleHTTPRequestHandler)
-    print(f"Web server fake dang chay tren port {port}")
+    print(f"Web server dang chay tren port {port}")
     server.serve_forever()
 
 # --- 1. CẤU HÌNH TOKEN VÀ API KEY ---
-TELEGRAM_BOT_TOKEN = "8961970849:AAEupko-iMJZFyoeS5NsgbhkDUpyfMW2LVU"  # Thay Token Telegram của bạn vào đây
-GEMINI_API_KEY = "AQ.Ab8RN6KDh3Ey6yX1YXGplCcdmSzFpIZkv87UAc94sKRGXMnsKg"  # Key Gemini của bạn
+TELEGRAM_BOT_TOKEN = "8961970849:AAEupko-iMJZFyoeS5NsgbhkDUpyfMW2LVU"  # Thay Token Telegram của bạn
+GEMINI_API_KEY = "AQ.Ab8RN6KmOyiIif85eNnquppr8B0ZkYz-46rxH2XpI9pjceFgJg"  # Thay API Key mới (AIzaSy...) vào đây
 
-client = genai.Client(api_key="AQ.Ab8RN6KDh3Ey6yX1YXGplCcdmSzFpIZkv87UAc94sKRGXMnsKg")
+client = genai.Client(api_key="AQ.Ab8RN6KmOyiIif85eNnquppr8B0ZkYz-46rxH2XpI9pjceFgJg")
 
 # --- 2. HÀM XỬ LÝ LỆNH /start ---
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("👋 Xin chào! Tôi là Bot AI Gemini. Bạn muốn hỏi tôi điều gì?")
 
-# --- 3. HÀM XỬ LÝ TIN NHẮN VỚI GEMINI (STREAMING) ---
+# --- 3. HÀM XỬ LÝ TIN NHẮN (STREAMING) ---
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_text = update.message.text
     await context.bot.send_chat_action(chat_id=update.effective_chat.id, action="typing")
 
     try:
-        # Gọi Gemini AI trả lời
         response = client.models.generate_content_stream(
-            model='gemini-3.6-flash',
+            model='gemini-2.5-flash',
             contents=user_text,
         )
         
@@ -65,10 +64,11 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 # --- 4. KHỞI CHẠY BOT ---
 if __name__ == '__main__':
-    # Chạy Web Server ở luồng phụ (Thread)
-    threading.Thread(target=run_dummy_server, daemon=True).start()
+    # Khởi chạy Web server trên luồng phụ trước
+    server_thread = threading.Thread(target=run_dummy_server, daemon=True)
+    server_thread.start()
 
-    # Chạy Telegram Bot Polling ở luồng chính
+    # Khởi chạy Telegram Bot
     app = ApplicationBuilder().token(TELEGRAM_BOT_TOKEN).build()
     app.add_handler(CommandHandler("start", start))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
