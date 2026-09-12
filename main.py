@@ -20,9 +20,9 @@ def run_dummy_server():
 
 # --- 1. CẤU HÌNH TOKEN VÀ API KEY ---
 TELEGRAM_BOT_TOKEN = "8961970849:AAEupko-iMJZFyoeS5NsgbhkDUpyfMW2LVU"  # Thay Token Telegram của bạn
-GEMINI_API_KEY = "AQ.Ab8RN6KmOyiIif85eNnquppr8B0ZkYz-46rxH2XpI9pjceFgJg"  # Thay API Key mới (AIzaSy...) vào đây
+GEMINI_API_KEY = "AQ.Ab8RN6Kd6ui3C58prwktSsRGcQLykr210MXi_pcjJJfXad9i4w"  # Thay API Key mới (AIzaSy...) vào đây
 
-client = genai.Client(api_key="AQ.Ab8RN6KmOyiIif85eNnquppr8B0ZkYz-46rxH2XpI9pjceFgJg")
+client = genai.Client(api_key="AQ.Ab8RN6Kd6ui3C58prwktSsRGcQLykr210MXi_pcjJJfXad9i4w")
 
 # --- 2. HÀM XỬ LÝ LỆNH /start ---
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
