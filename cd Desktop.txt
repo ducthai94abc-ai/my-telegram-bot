@@ -1,0 +1,3 @@
+cd Desktop
+py exec -m pip install google-genai
+py exec main.py
